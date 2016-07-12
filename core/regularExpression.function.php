@@ -21,6 +21,11 @@ class regularExpression
         return $res;
     }
 
+    public function getOnePageByNumber(){
+        preg_match_all('#<a title=".*"\ndata-tip="p\$t\$(.*)"#',$this->infoContent,$result);
+        return $result;
+    }
+
     public function getCurrentUserInfo(){
         $res = array();
         $res[] = self::getNameAndTitle();
@@ -33,7 +38,7 @@ class regularExpression
         $res[] = self::getEducationExtra();
         $res[] = self::getFolloweeNumber();
         $res[] = self::getFollowerNumber();
-
+        $res[] = self::getHashId();
 //        var_dump($res);exit;
         $reRes = array();
         foreach($res as $key=>$value){
@@ -98,6 +103,11 @@ class regularExpression
 
     private function getFollowerNumber(){
         preg_match_all('#<span class="zg-gray-normal">关注者</span><br />\n<strong>(.*)</strong><label> 人</label>#',$this->infoContent,$res);
+        return $res;
+    }
+
+    private function getHashId(){
+        preg_match_all('#<script type="text/json" class="json-inline" data-name="current_people">\[.*jpg"\,"(.*)"\]#',$this->infoContent,$res);
         return $res;
     }
 
