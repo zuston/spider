@@ -19,27 +19,38 @@ include './db/db.php';
 while(1){
     $pdo = new db();
     $pdo->getInstance();
-    $queue = $pdo->getQueue();
-    $queueNickName = $queue[0]['nick_name'];
-    $pdo -> updateQueueMark($queueNickName,2);
-
-    $curlInstance = new curl($queueNickName, $config);
-    //获取当前爬取用户信息,并且存入user表中
-    $spiderFolloweeContent = $curlInstance->robotSpider('followees');
-    $spiderFollowerContent = $curlInstance->robotSpider('followers');
-    $res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
-    $res[] = $queueNickName;
-    if ($pdo->saveUser($res)) {
-        echo "============{$res[0]}的个人信息已经录入======================================\n";
-    } else {
-        echo "============{$res[0]}的个人信息录入失败===========================\n";
+    $queueList = $pdo->getQueueList();
+//    $queueNickName = $queue[0]['nick_name'];
+    $nickNameArray = array();
+    foreach($queueList as $key => $value){
+        $pdo -> updateQueueMark($value["nick_name"],2);
+        $nickNameArray[] = $value["nick_name"];
     }
 
-    //一次爬取结束,更新queue的当前nickName的mark值
-    if ($pdo->updateQueueMark($queueNickName,3)) {
-        echo "============{$res[0]}的爬取成功结束=============================================\n";
-    } else {
-        echo "============{$res[0]}的爬取失败结束=============================================\n";
+    $curlInstance = new curl('', $config);
+    //返回为数组
+    $res = $curlInstance -> viceSpider($nickNameArray);
 
+    foreach($res as $key => $user){
+        if(!is_null($user)){
+            $returnRes = regularExpression::getCurrentUserInfo($user);
+            $returnRes[] = $nickNameArray[$key];
+            if ($pdo->saveUser($returnRes)) {
+                echo "============{$returnRes[0]}的个人信息已经录入============\n";
+            } else {
+                echo "============{$returnRes[0]}的个人信息录入失败============\n";
+            }
+
+            //一次爬取结束,更新queue的当前nickName的mark值
+            if ($pdo->updateQueueMark($nickNameArray[$key],3)) {
+                echo "============{$returnRes[0]}的爬取成功结束============\n";
+
+            } else {
+                echo "============{$returnRes[0]}的爬取失败结束============\n";
+
+            }
+        }else{
+            continue;
+        }
     }
 }
