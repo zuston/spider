@@ -48,4 +48,15 @@ $config = array(
         'user_config_cookie' => getCookie($user_cookie_array),
         '_xsrf' => $user_cookie_array['_xsrf'],
     ),
+//$dsn = "mysql:host=localhost;dbname=xxx";
+//$username = "xxxxx";
+//$pwd = "xxxx";
+//$pdo = new PDO($dsn,$username,$pwd);
+
+    'db_config' => array(
+        'host' => 'localhost',
+        'dbname' => 'spider',
+        'username' => 'root',
+        'pwd' => 'zuston',
+    ),
 );

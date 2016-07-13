@@ -10,16 +10,27 @@
 include './config/config.php';
 include './core/curl.class.php';
 include './core/regularExpression.function.php';
+include './db/db.php';
 
-$curlInstance = new curl('sha-cha-57',$config);
+/**
+ * db_test
+ */
+
+$pdo = new db();
+$pdo->getInstance();
+//var_dump($conn);exit;
+$pdo->getQueues();
+
+
+$curlInstance = new curl('tian-yuan-dong',$config);
 $result = $curlInstance -> robotSpider('followees');
-$regularExpress = new regularExpression($result);
-$res = $regularExpress -> getCurrentUserInfo();
+//$regularExpress = new regularExpression($result);
+$res = regularExpression::getCurrentUserInfo($result);
 var_dump($res);
 $hashID = $res[11];
 $result = $curlInstance -> robotSpider('followees',$res[9],$hashID);
-$regularExpress = new regularExpression($result);
-$followees = $regularExpress -> getOnePageByNumber();
+//$regularExpress = new regularExpression($result);
+$followees = regularExpression::getOnePageByNumber($result);
 var_dump($followees);exit;
 
 
