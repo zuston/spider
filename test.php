@@ -6,34 +6,40 @@
  * Time: 下午11:37
  */
 
+/**
+ * db_test
+ */
 
 include './config/config.php';
 include './core/curl.class.php';
 include './core/regularExpression.function.php';
 include './db/db.php';
 
-/**
- * db_test
- */
+//$pdo = new db();
+//$pdo->getInstance();
+//$queue = $pdo->getQueue();
+//$queueNickName = $queue[0]['nick_name'];
+//$pdo->updateQueueMark($queueNickName, 2);
 
-$pdo = new db();
-$pdo->getInstance();
-//var_dump($conn);exit;
-$pdo->getQueues();
+$curlInstance = new curl('xuxiaoteng', $config);
+//获取当前爬取用户信息,并且存入user表中
+$spiderFolloweeContent = $curlInstance->robotSpider('followees');
+$res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
+$res[] = 'xuxiaoteng';
+
+//var_dump($res);exit;
+
+$hashId = $res[11];
+$followees = $res[9];
+$followers = $res[10];
+
+//为抓取用户关注表nick_name和被关注表的nick_name
+if ($followees > 19) {
+    $queueSpiderContent = $curlInstance->robotSpider('followees', $followees, $hashId);
+    $followees = regularExpression::getOnePageByNumber($queueSpiderContent . $spiderFolloweeContent);
+} else {
+    $followees = regularExpression::getOnePageByNumber($spiderFolloweeContent);
+}
+var_dump($followees);
 
 
-$curlInstance = new curl('tian-yuan-dong',$config);
-$result = $curlInstance -> robotSpider('followees');
-//$regularExpress = new regularExpression($result);
-$res = regularExpression::getCurrentUserInfo($result);
-var_dump($res);
-$hashID = $res[11];
-$result = $curlInstance -> robotSpider('followees',$res[9],$hashID);
-//$regularExpress = new regularExpression($result);
-$followees = regularExpression::getOnePageByNumber($result);
-var_dump($followees);exit;
-
-
-//echo "-------------------正则解析共消耗".$expressAllTime."s----------------\n";
-var_dump($followees);exit;
-//var_dump($res);

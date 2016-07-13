@@ -6,9 +6,6 @@
  * Time: 下午2:55
  */
 
-const FOLLOWERS = 'followers';
-const FOLLOWEES = 'followees';
-
 $user_cookie_array = array(
     '__utma' => '51854390.95149355.1461290900.1467301310.1468161996.20',
     '__utmb' => '51854390.14.10.1468161996',
@@ -48,10 +45,6 @@ $config = array(
         'user_config_cookie' => getCookie($user_cookie_array),
         '_xsrf' => $user_cookie_array['_xsrf'],
     ),
-//$dsn = "mysql:host=localhost;dbname=xxx";
-//$username = "xxxxx";
-//$pwd = "xxxx";
-//$pdo = new PDO($dsn,$username,$pwd);
 
     'db_config' => array(
         'host' => 'localhost',
