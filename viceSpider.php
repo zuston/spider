@@ -43,10 +43,10 @@ while(1){
 
             //一次爬取结束,更新queue的当前nickName的mark值
             if ($pdo->updateQueueMark($nickNameArray[$key],3)) {
-                echo "============{$returnRes[0]}的爬取成功结束============\n";
+                echo "============{$returnRes[0]}的爬取成功结束============\n\n\n";
 
             } else {
-                echo "============{$returnRes[0]}的爬取失败结束============\n";
+                echo "============{$returnRes[0]}的爬取失败结束============\n\n\n";
 
             }
         }else{
