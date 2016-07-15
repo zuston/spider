@@ -71,6 +71,7 @@ class curl
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
         }
+        usleep(10000);
         $result = curl_exec($ch);
 //        curl_close($ch);
         return $result;
