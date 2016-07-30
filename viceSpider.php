@@ -28,16 +28,22 @@ while(1){
     }
 
 //    var_dump($nickNameArray);exit;
-
+//    $nickNameArray[0] = "cai-xiao";
     $curlInstance = new curl('', $config);
     //返回为数组
     $res = $curlInstance -> viceSpider($nickNameArray);
 
-//    var_dump($res[8]);exit;
+//    var_dump($res[0]);exit;
     foreach($res as $key => $user){
         if(!is_null($user)){
             $returnRes = regularExpression::getCurrentUserInfo($user);
 //            var_dump($returnRes);exit;
+            if(is_null($returnRes[0])){
+                $returnRes[] = $nickNameArray[$key];
+                var_dump($returnRes);
+                echo "============此处内存泄露============\n";
+                continue;
+            }
             $returnRes[] = $nickNameArray[$key];
             if ($pdo->saveUser($returnRes)) {
                 echo "============{$returnRes[0]}的个人信息已经录入============\n";
@@ -53,7 +59,6 @@ while(1){
                 echo "============{$returnRes[0]}的爬取失败结束============\n\n\n";
 
             }
-            exit;
         }else{
             continue;
         }

@@ -48,7 +48,9 @@ class curl
         foreach($nickNameArray as $value){
             $urlArray[] = 'https://www.zhihu.com/people/' . $value . '/followees';
         }
+//        var_dump($urlArray);exit;
         $mainContent = self::curlMulti($urlArray);
+//        var_dump($mainContent[0]);exit;
         return $mainContent;
     }
 
@@ -259,6 +261,7 @@ class curl
         foreach($curlArray as $curlRes){
             $res[] = curl_multi_getcontent($curlRes);
         }
+//        var_dump($res[0]);exit;
         return $res;
     }
 }

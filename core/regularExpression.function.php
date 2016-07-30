@@ -45,6 +45,7 @@ class regularExpression
                 }
             }
         }
+        unset($res);
 //        var_dump($reRes);
 //        exit;
         return $reRes;

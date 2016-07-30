@@ -14,7 +14,7 @@ class db
             'host' => 'localhost',
             'dbname' => 'spider',
             'username' => 'root',
-            'pwd' => 'shacha',
+            'pwd' => 'zuston',
         ),
     );
 
@@ -42,7 +42,7 @@ class db
     }
 
     public function getQueueList(){
-        $sql = 'select * from queue where mark = 0 order by id limit 10';
+        $sql = 'select * from queue where mark = 0 order by id limit 5';
         $res = self::$dbConnection->query($sql);
 //        var_dump($res->fetchAll());exit;
         return $res->fetchAll();
@@ -73,6 +73,9 @@ class db
                         {$followees},{$followers},{$hashId}
                        );";
         $returnRes = self::$dbConnection->exec($sql);
+        if($returnRes==0){
+            var_dump($res);exit;
+        }
         return ($returnRes != 0) ? true : false;
     }
 

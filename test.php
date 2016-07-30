@@ -21,13 +21,17 @@ include './db/db.php';
 //$queueNickName = $queue[0]['nick_name'];
 //$pdo->updateQueueMark($queueNickName, 2);
 
-$curlInstance = new curl('xuxiaoteng', $config);
+$curlInstance = new curl('cai-xiao', $config);
 //获取当前爬取用户信息,并且存入user表中
 $spiderFolloweeContent = $curlInstance->robotSpider('followees');
 $res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
 $res[] = 'xuxiaoteng';
 
 var_dump($res);exit;
+
+$pdo = new db();
+$pdo->getInstance();
+var_dump($pdo->saveUser($res));exit;
 
 $hashId = $res[11];
 $followees = $res[9];
