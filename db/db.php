@@ -14,7 +14,7 @@ class db
             'host' => 'localhost',
             'dbname' => 'spider',
             'username' => 'root',
-            'pwd' => 'zuston',
+            'pwd' => 'shacha',
         ),
     );
 
@@ -66,12 +66,12 @@ class db
         $nickName = '"' . $res[12] . '"';
 
         $sql = "insert into
-                USER(nick_name,name,title,location,bussiness,sex,employment,position,
+                user(nick_name,name,title,location,bussiness,sex,employment,position,
                      education,education_extra,followee_number,follower_number,hash_id)
                 VALUES({$nickName},{$name},{$title},{$location},{$bussiness},
                         {$sex},{$employment},{$position},{$education},{$educationExtra},
                         {$followees},{$followers},{$hashId}
-                       )";
+                       );";
         $returnRes = self::$dbConnection->exec($sql);
         return ($returnRes != 0) ? true : false;
     }
