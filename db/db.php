@@ -96,6 +96,7 @@ class db
                 continue;
             }
         }
+//        echo rtrim($sql,",");exit;
         echo "============{$count}进入任务队列===========\n";
         $returRes = self::$dbConnection->exec(rtrim($sql, ","));
         return $returRes == false ? false : true;

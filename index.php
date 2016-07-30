@@ -21,10 +21,10 @@ while (1) {
     $queue = $pdo->getQueue();
     $queueNickName = $queue[0]['nick_name'];
     $pdo -> updateQueueMark($queueNickName,2);
-
     $curlInstance = new curl($queueNickName, $config);
     //获取当前爬取用户信息,并且存入user表中
     $spiderFolloweeContent = $curlInstance->robotSpider('followees');
+//    var_dump($spiderFolloweeContent);exit;
     $spiderFollowerContent = $curlInstance->robotSpider('followers');
     $res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
     $res[] = $queueNickName;
@@ -36,16 +36,20 @@ while (1) {
 
 
     $hashId = $res[11];
-    $followees = $res[9];
-    $followers = $res[10];
+    $followeesNumber = $res[9];
+    $followersNumber = $res[10];
 
     //为抓取用户关注表nick_name和被关注表的nick_name
-    if ($followees > 19) {
-        $queueSpiderContent = $curlInstance->robotSpider('followees', $followees, $hashId);
+    if ($followeesNumber > 19) {
+        $queueSpiderContent = $curlInstance->robotSpider('followees', $followeesNumber, $hashId);
+//        var_dump($queueSpiderContent);exit;
         $followees = regularExpression::getOnePageByNumber($queueSpiderContent . $spiderFolloweeContent);
     } else {
         $followees = regularExpression::getOnePageByNumber($spiderFolloweeContent);
     }
+
+
+//    var_dump($followees);exit;
 
     echo "============{$res[0]}的应有{$res[9]}进入任务队列============\n";
     if ($pdo->saveQueue($followees[1])) {
@@ -54,12 +58,16 @@ while (1) {
         echo "============{$res[0]}的followees进入失败,怀疑为重复爬取============\n";
     }
 
-    if ($followers > 19) {
-        $queueSpiderContent = $curlInstance->robotSpider('followers', $followers, $hashId);
-        $followers = regularExpression::getOnePageByNumber($queueSpiderContent . $spiderFolloweeContent);
+//    exit;
+
+    if ($followersNumber > 19) {
+        $queueSpiderContent = $curlInstance->robotSpider('followers', $followersNumber, $hashId);
+        $followers = regularExpression::getOnePageByNumber($queueSpiderContent . $spiderFollowerContent);
     } else {
         $followers = regularExpression::getOnePageByNumber($spiderFollowerContent);
     }
+
+//    var_dump($followers);exit;
 
     //存储用户关系
     if($pdo->saveRelationT($queueNickName,$followees[1])){

@@ -27,7 +27,7 @@ $spiderFolloweeContent = $curlInstance->robotSpider('followees');
 $res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
 $res[] = 'xuxiaoteng';
 
-//var_dump($res);exit;
+var_dump($res);exit;
 
 $hashId = $res[11];
 $followees = $res[9];

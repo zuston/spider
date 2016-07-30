@@ -17,7 +17,7 @@ class regularExpression
 
     public static function getOnePageByNumber($infoContent)
     {
-        preg_match_all('#<a title=".*"\ndata-tip="p\$t\$(.*)"#', $infoContent, $result);
+        preg_match_all('#<a title=".*"\ndata-hovercard="p\$t\$(.*)"#', $infoContent, $result);
         return $result;
     }
 
