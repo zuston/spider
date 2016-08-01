@@ -258,9 +258,14 @@ class curl
         curl_multi_close($multiInstance);
 
         $res = array();
-        foreach($curlArray as $curlRes){
+        echo "***********初始内存容量为".memory_get_usage()."********************\n";
+        foreach($curlArray as $key => $curlRes){
             $res[] = curl_multi_getcontent($curlRes);
+            echo "***********{$key}的当前内存容量为".memory_get_usage()."********************\n";
+
         }
+        echo "***********存储内存容量为".memory_get_usage()."********************\n";
+
 //        var_dump($res[0]);exit;
         return $res;
     }

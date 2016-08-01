@@ -63,4 +63,7 @@ while(1){
             continue;
         }
     }
+
+    unset($res);
+    $res = null;
 }
