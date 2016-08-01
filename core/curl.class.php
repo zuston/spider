@@ -85,7 +85,7 @@ class curl
         $fields = array(
             'method' => 'next',
             'params' => '{"offset":' . $startNumber . ',"order_by":"created","hash_id":"1ab5d5d3c2d8bdbf5504e7c53057d008"}',
-            '_xsrf' => '241ee0343b4e40cb6d6bd1c2489e0c8d'
+            '_xsrf' => '205ba8e98bdc6981ee2222c10f31de12'
         );
         $content = self::curlCore('http://www.zhihu.com/node/ProfileFolloweesListV2', 'POST', $fields);
         $result = '';
