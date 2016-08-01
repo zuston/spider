@@ -27,8 +27,6 @@ while(1){
         $nickNameArray[] = $value["nick_name"];
     }
 
-//    var_dump($nickNameArray);exit;
-//    $nickNameArray[0] = "cai-xiao";
     $curlInstance = new curl('', $config);
     //返回为数组
     $res = $curlInstance -> viceSpider($nickNameArray);
@@ -39,9 +37,9 @@ while(1){
             $returnRes = regularExpression::getCurrentUserInfo($user);
 //            var_dump($returnRes);exit;
             if(is_null($returnRes[0])){
-                $returnRes[] = $nickNameArray[$key];
-                var_dump($returnRes);
-                echo "============此处内存泄露============\n";
+//                $returnRes[] = $nickNameArray[$key];
+//                var_dump($returnRes);
+//                echo "============此处内存泄露============\n";
                 continue;
             }
             $returnRes[] = $nickNameArray[$key];
@@ -60,6 +58,8 @@ while(1){
 
             }
         }else{
+            changeConfig();
+            echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
             continue;
         }
     }

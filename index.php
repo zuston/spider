@@ -28,6 +28,12 @@ while (1) {
     $spiderFollowerContent = $curlInstance->robotSpider('followers');
     $res = regularExpression::getCurrentUserInfo($spiderFolloweeContent);
     $res[] = $queueNickName;
+
+    if($res[0]==null){
+        changeConfig();
+        echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
+        continue;
+    }
     if ($pdo->saveUser($res)) {
         echo "============{$res[0]}的个人信息已经录入============\n";
     } else {
@@ -49,8 +55,6 @@ while (1) {
     }
 
 
-//    var_dump($followees);exit;
-
     echo "============{$res[0]}的应有{$res[9]}进入任务队列============\n";
     if ($pdo->saveQueue($followees[1])) {
         echo "============{$res[0]}的followees已经进入任务队列中============\n";
@@ -58,7 +62,6 @@ while (1) {
         echo "============{$res[0]}的followees进入失败,怀疑为重复爬取============\n";
     }
 
-//    exit;
 
     if ($followersNumber > 19) {
         $queueSpiderContent = $curlInstance->robotSpider('followers', $followersNumber, $hashId);
@@ -66,8 +69,6 @@ while (1) {
     } else {
         $followers = regularExpression::getOnePageByNumber($spiderFollowerContent);
     }
-
-//    var_dump($followers);exit;
 
     //存储用户关系
     if($pdo->saveRelationT($queueNickName,$followees[1])){

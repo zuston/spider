@@ -13,11 +13,31 @@ class curl
     public $config = array();
     //多页关注者的唯一id值
     public $hashId;
+    public $_xsrf;
+    public $cookie;
+
+    public $changeId = 1;
 
     public function __construct($name, $config = array())
     {
         $this->name = $name;
         $this->config = $config;
+        $this->hashId = $this->config['user_config']['hash_id'];
+        $this->_xsrf = $this->config['user_config']['_xsrf'];
+        $this->cookie = $this->config['user_config']['user_config_cookie'];
+    }
+
+    public function changeConfig(){
+        $this->changeId += 1;
+        if($this->changeId%2==0){
+            $this->hashId = $this->config['user_config_default']['hash_id'];
+            $this->_xsrf = $this->config['user_config_default']['_xsrf'];
+            $this->cookie = $this->config['user_config_default']['user_config_cookie'];
+        }else{
+            $this->hashId = $this->config['user_config']['hash_id'];
+            $this->_xsrf = $this->config['user_config']['_xsrf'];
+            $this->cookie = $this->config['user_config']['user_config_cookie'];
+        }
     }
 
     //获取关注者和被关注者
@@ -61,7 +81,7 @@ class curl
         $http_user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36';
         $ch = curl_init($url); //初始化会话
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_COOKIE, $this->config['user_config']['user_config_cookie']);
+        curl_setopt($ch, CURLOPT_COOKIE, $this->cookie);
         curl_setopt($ch, CURLOPT_USERAGENT, $http_user_agent);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //将curl_exec()获取的信息以文件流的形式返回，而不是直接输出。
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
@@ -84,8 +104,8 @@ class curl
     {
         $fields = array(
             'method' => 'next',
-            'params' => '{"offset":' . $startNumber . ',"order_by":"created","hash_id":"1ab5d5d3c2d8bdbf5504e7c53057d008"}',
-            '_xsrf' => '205ba8e98bdc6981ee2222c10f31de12'
+            'params' => '{"offset":' . $startNumber . ',"order_by":"created","hash_id":"'.$this->hashId.'"}',
+            '_xsrf' => $this->_xsrf,
         );
         $content = self::curlCore('http://www.zhihu.com/node/ProfileFolloweesListV2', 'POST', $fields);
         $result = '';
@@ -101,7 +121,7 @@ class curl
         $fields = array(
             'method' => 'next',
             'params' => '{"offset":' . $startNumber . ',"order_by":"created","hash_id":' . $hash_id . '}',
-            '_xsrf' => $this->config['user_config']['_xsrf'],
+            '_xsrf' => $this->_xsrf,
         );
         if ($topic == 1) {
             $content = self::curlCore('http://www.zhihu.com/node/ProfileFolloweesListV2', 'POST', $fields);
@@ -132,7 +152,7 @@ class curl
                 $fieldsArray[] = array(
                     'method' => 'next',
                     'params' => '{"offset":' . ($i * 19 + 1) . ',"order_by":"created","hash_id":' . $hash_id . '}',
-                    '_xsrf' => $this->config['user_config']['_xsrf'],
+                    '_xsrf' => $this->_xsrf,
                 );
             }
         }
@@ -142,7 +162,7 @@ class curl
             $fieldsArray[] = array(
                 'method' => 'next',
                 'params' => '{"offset":' . (($times+1) * 19 + 1) . ',"order_by":"created","hash_id":' . $hash_id . '}',
-                '_xsrf' => $this->config['user_config']['_xsrf'],
+                '_xsrf' => $this->_xsrf,
             );
         }
 //        var_dump($fieldsArray);exit;
@@ -258,15 +278,18 @@ class curl
         curl_multi_close($multiInstance);
 
         $res = array();
-        echo "***********初始内存容量为".memory_get_usage()."********************\n";
+//        echo "***********初始内存容量为".memory_get_usage()."********************\n";
         foreach($curlArray as $key => $curlRes){
             $res[] = curl_multi_getcontent($curlRes);
-            echo "***********{$key}的当前内存容量为".memory_get_usage()."********************\n";
+//            echo "***********{$key}的当前内存容量为".memory_get_usage()."********************\n";
 
         }
-        echo "***********存储内存容量为".memory_get_usage()."********************\n";
+//        echo "***********存储内存容量为".memory_get_usage()."********************\n";
 
 //        var_dump($res[0]);exit;
         return $res;
     }
+
+
+
 }

@@ -42,7 +42,7 @@ class db
     }
 
     public function getQueueList(){
-        $sql = 'select * from queue where mark = 0 order by id limit 5';
+        $sql = 'select * from queue where mark = 0 order by id limit 4';
         $res = self::$dbConnection->query($sql);
 //        var_dump($res->fetchAll());exit;
         return $res->fetchAll();
