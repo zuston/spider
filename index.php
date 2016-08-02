@@ -15,7 +15,18 @@ include './core/curl.class.php';
 include './core/regularExpression.function.php';
 include './db/db.php';
 
+
+$changeCount = 0;
+
+
 while (1) {
+
+    if($changeCount>=10){
+        changeConfig();
+        echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
+        $changeCount = 0;
+    }
+
     $pdo = new db();
     $pdo->getInstance();
     $queue = $pdo->getQueue();
@@ -90,5 +101,7 @@ while (1) {
         echo "============{$res[0]}的爬取失败结束============\n\n";
 
     }
+
+    $changeCount ++;
 
 }

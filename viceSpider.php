@@ -16,11 +16,19 @@ include './db/db.php';
  * 鉴于抓取关注者速度过慢,只针对queue中的请求进行处理,一次爬取个人信息
  */
 
+$changeCount = 0;
+
 while(1){
+
+    if($changeCount>=10){
+        changeConfig();
+        echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
+        $changeCount = 0;
+    }
+
     $pdo = new db();
     $pdo->getInstance();
     $queueList = $pdo->getQueueList();
-//    $queueNickName = $queue[0]['nick_name'];
     $nickNameArray = array();
     foreach($queueList as $key => $value){
         $pdo -> updateQueueMark($value["nick_name"],2);
@@ -31,16 +39,14 @@ while(1){
     //返回为数组
     $res = $curlInstance -> viceSpider($nickNameArray);
 
-//    var_dump($res[0]);exit;
     foreach($res as $key => $user){
+//        var_dump(is_null($user));
         if(!is_null($user)){
             $returnRes = regularExpression::getCurrentUserInfo($user);
-//            var_dump($returnRes);exit;
-            if(is_null($returnRes[0])){
-//                $returnRes[] = $nickNameArray[$key];
-//                var_dump($returnRes);
-//                echo "============此处内存泄露============\n";
-                continue;
+            if($returnRes[0]==null){
+                changeConfig();
+                echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
+                break;
             }
             $returnRes[] = $nickNameArray[$key];
             if ($pdo->saveUser($returnRes)) {
@@ -58,12 +64,9 @@ while(1){
 
             }
         }else{
-            changeConfig();
-            echo "\n\n\n***************************已经切换配置*******************************\n\n\n";
             continue;
         }
     }
 
-    unset($res);
-    $res = null;
+    $changeCount ++ ;
 }
